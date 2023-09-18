@@ -7,15 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ScreensaverComponent implements OnInit {
   screensaverActive = false;
-  // screensaverColor = '#000'; // Default color
-  idleTime = 2 // In seconds
+  idleTime = 2; // In seconds
   mousetimeout: any;
+  keyboardTimeout: any;
 
   constructor() {}
 
   ngOnInit(): void {
     document.addEventListener('mousemove', () => {
       clearTimeout(this.mousetimeout);
+      clearTimeout(this.keyboardTimeout);
 
       if (this.screensaverActive) {
         this.stopScreensaver();
@@ -25,23 +26,26 @@ export class ScreensaverComponent implements OnInit {
         this.showScreensaver();
       }, 1000 * this.idleTime);
     });
+
+    document.addEventListener('keydown', () => {
+      clearTimeout(this.keyboardTimeout);
+      clearTimeout(this.mousetimeout);
+
+      if (this.screensaverActive) {
+        this.stopScreensaver();
+      }
+
+      this.keyboardTimeout = setTimeout(() => {
+        this.showScreensaver();
+      }, 1000 * this.idleTime);
+    });
   }
 
   showScreensaver(): void {
     this.screensaverActive = true;
-    // this.screensaverColor = this.getRandomColor();
   }
 
   stopScreensaver(): void {
     this.screensaverActive = false;
   }
-
-  // getRandomColor(): string {
-  //   const letters = '0123456789ABCDEF';
-  //   let color = '#';
-  //   for (let i = 0; i < 6; i++) {
-  //     color += letters[Math.floor(Math.random() * 16)];
-  //   }
-  //   return color;
-  // }
 }
